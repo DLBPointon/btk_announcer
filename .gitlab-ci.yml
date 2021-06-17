@@ -24,7 +24,7 @@ job1:
         - pip3 install python-dotenv
 
     run:
-    script:
-        - python MrBTK_v2.py
+        script:
+            - python MrBTK_v2.py
 
     allow_failure: true
