@@ -26,5 +26,3 @@ before_script:
 run:
     script:
         - python MrBTK_v2.py
-
-allow_failure: true
