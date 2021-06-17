@@ -1,0 +1,30 @@
+# This file is a template, and might need editing before it works on your project.
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+
+image: python:latest
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+job1:
+    variables:
+        PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+        JIRA_PASS: ''
+        JIRA_USER: ''
+        TEST_HOOK: ''
+        PROD_HOOK: ''
+
+    before_script:
+        - echo $PATH
+        - python -v
+        - pip3 install jira-python
+        - pip3 install sys
+        - pip3 install os
+        - pip3 install datetime
+        - pip3 install python-dotenv
+
+    run:
+    script:
+        - python MrBTK_v2.py
+
+    allow_failure: true
