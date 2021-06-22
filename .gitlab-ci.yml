@@ -2,17 +2,17 @@
 # Official language image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/python/tags/
 
-image: python:latest
+stages:
+ - first
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 
 variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-    JIRA_PASS: ''
-    JIRA_USER: ''
-    TEST_HOOK: ''
-    PROD_HOOK: ''
+    JIRA_PASS: $JIRA_PASS
+    JIRA_USER: $JIRA_USER
+    TEST_HOOK: $TEST_HOOK
+    PROD_HOOK: $PROD_HOOK
 
 before_script:
     - echo $PATH
@@ -23,6 +23,9 @@ before_script:
     - pip3 install datetime
     - pip3 install python-dotenv
 
-run:
-    script:
-        - python MrBTK_v2.py
+mrbtk:
+  stage: first
+  tags:
+   - autoscale
+  script:
+    - python MrBTK_v2.py
