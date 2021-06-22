@@ -8,8 +8,8 @@ def dotloader():
     jira_user = os.getenv('JIRA_USER')
     print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
-    test_hook = os.getenv('TEST_HOOK')
-    prod_hook = os.getenv('PROD_HOOK')
+    test_hook = os.getenv('SLACK_TEST')
+    prod_hook = os.getenv('SLACK_PROD')
     return jira_user, jira_pass, test_hook, prod_hook
 
 
