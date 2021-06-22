@@ -24,20 +24,15 @@ def labelled_btk(auth, project, decon_or_curation):
     projects = None
 
     if project == '= "Assembly curation"' and not decon_or_curation:
-        projects = auth.search_issues(f'project {project}'
-                                      f' AND labels = BlobToolKit'
-                                      f' AND status IN (curation,"Curation QC")',
+        projects = auth.search_issues(f'project {project} AND labels = BlobToolKit AND status IN (curation,"Curation QC")',
                                       maxResults=10000)
 
     if project == '= "Assembly curation"' and decon_or_curation:
-        projects = auth.search_issues(f'project {project}'
-                                      f' AND status = Decontamination'
-                                      f' AND labels = BlobToolKit',
+        projects = auth.search_issues(f'project {project} AND status = Decontamination AND labels = BlobToolKit',
                                       maxResults=10000)
 
     if project == '= "Rapid Curation"':
-        projects = auth.search_issues(f'project {project}'
-                                      f' AND labels = BlobToolKit',
+        projects = auth.search_issues(f'project {project} AND labels = BlobToolKit',
                                       maxResults=10000)
 
     return projects
