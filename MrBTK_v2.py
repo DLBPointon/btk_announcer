@@ -167,11 +167,9 @@ def main():
     print(master_out)
 
     if sys.argv[0] == 'test':
-        hook = test_hook
+        post_it(master_out, test_hook)
     else:
-        hook = prod_hook
-
-    post_it(master_out, hook)
+        post_it(master_out, prod_hook)
 
 
 if __name__ == '__main__':
