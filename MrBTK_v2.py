@@ -2,7 +2,6 @@ from jira import JIRA
 from datetime import date
 import sys
 import os
-from dotenv import load_dotenv
 
 
 def dotloader():
