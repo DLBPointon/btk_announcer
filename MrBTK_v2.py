@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 
 def dotloader():
-    load_dotenv('sample.env')
     jira_user = os.getenv('JIRA_USER')
+    print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
     test_hook = os.getenv('TEST_HOOK')
     prod_hook = os.getenv('PROD_HOOK')
