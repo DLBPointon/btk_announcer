@@ -11,8 +11,8 @@ stages:
 variables:
     JIRA_PASS: $JIRA_PASS
     JIRA_USER: $JIRA_USER
-    TEST_HOOK: $TEST_HOOK
-    PROD_HOOK: $PROD_HOOK
+    TEST_HOOK: $SLACK_TEST
+    PROD_HOOK: $SLACK_HOOK
 
 before_script:
     - echo $PATH
