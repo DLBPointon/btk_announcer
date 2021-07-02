@@ -2,11 +2,11 @@ from jira import JIRA
 from datetime import date
 import sys
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 
 def dotloader():
-    #load_dotenv() for testing
+    load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
@@ -50,10 +50,7 @@ def comment_check(auth_jira, projects):
         for ii in comment_ids:
             comment = auth_jira.comment(f'{issue}', f'{ii}')
 
-            if 'need a BTK' in comment.body:
-                request.append(str(issue))
-
-            if 'needs a BTK' in comment.body:
+            if issue.fields.labels[0] == 'BlobToolKit':
                 request.append(str(issue))
 
             if 'BTK DONE' in comment.body or 'btk done' in comment.body:
@@ -130,7 +127,8 @@ def list_2_output(decon, curation, rapid):
 
 def post_it(json, hook):
     webhook = f'{hook}'
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
+    print(json)
+    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
 
 
 def main():
