@@ -2,11 +2,11 @@ from jira import JIRA
 from datetime import date
 import sys
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 
 def dotloader():
-    load_dotenv() #for testing
+    #load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
@@ -128,7 +128,7 @@ def list_2_output(decon, curation, rapid):
 def post_it(json, hook):
     webhook = f'{hook}'
     print(json)
-    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
+    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
 
 
 def main():
