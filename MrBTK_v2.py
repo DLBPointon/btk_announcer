@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 def dotloader():
-    #load_dotenv() #for testing
+    # load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     #print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
@@ -70,13 +70,14 @@ def comment_check(auth_jira, projects):
 
 def list_setter(analysis, done, running, request):
     # Creates lists of unique issues
-    done = list(set(done) - set(analysis))
+    done2 = list(set(done))
+    done = list(set(done)-set(analysis))
     running = list(set(running))
     request = list(set(request))
 
     # Removes any issues found in DONE
-    request = list(set(request) - set(done))
-    running = list(set(running) - set(done))
+    request = list(set(request) - set(done2))
+    running = list(set(running) - set(done2))
     analysis = list(set(analysis))
 
     # Removes any issues found in RUNNING
@@ -90,6 +91,7 @@ def list_2_output(decon, curation, rapid, analysis):
     req_start = f' --- Status == REQUESTS --- ALL CHANNELS ---'
     run_start = f' --- Status == RUNNING --- ALL CHANNELS ---'
     don_start = f' --- Status == NEED ANALYSIS --- ALL CHANNELS ---'
+    analysis_start = f' --- Status == ANALYSIS DONE --- ALL CHANNELS ---'
 
     req_list = ''
     for i in decon[2], curation[2], rapid[2]:
@@ -117,21 +119,21 @@ def list_2_output(decon, curation, rapid, analysis):
         for ii in i:
             counter += 1
 
-    master_out = '{"text":"\n' \
-                 f' -------- MrBTK Report for {date.today()} START--------\n' \
-                 f' --- Version 2.2 ---\n' \
-                 f' --- Organised Decon, Curation, Rapid --- \n' \
-                 f'===================================================\n' \
-                 f'{req_start}\n' \
-                 f'{req_list}\n' \
-                 f'{run_start}\n' \
-                 f'{run_list}\n' \
-                 f'{don_start}\n' \
-                 f'{don_list}\n' \
-                 f'===================================================\n' \
-                 f' ------- BTKed and in Pipeline: {counter} -------\n' \
-                 f'===================================================\n' \
-                 f'-------- Report for {date.today()} FIN -------- "' \
+    master_out = '{"text":"\n' + \
+                 f' -------- MrBTK Report for {date.today()} START--------\n' + \
+                 f' --- Version 2.2 ---\n' + \
+                 f' --- Organised Decon, Curation, Rapid --- \n' + \
+                 f'===================================================\n' + \
+                 f'{req_start}\n' + \
+                 f'{req_list}\n' + \
+                 f'{run_start}\n' + \
+                 f'{run_list}\n' + \
+                 f'{don_start}\n' + \
+                 f'{don_list}\n' + \
+                 f'===================================================\n' + \
+                 f'BTKed and in the Pipeline:  {counter}\n' + \
+                 f'===================================================\n' + \
+                 f' -------- Report for {date.today()} FIN -------- "' + \
                  '}'
 
     return master_out
@@ -140,7 +142,7 @@ def list_2_output(decon, curation, rapid, analysis):
 def post_it(json, hook):
     webhook = f'{hook}'
     print(json)
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
+    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
 
 
 def main():
