@@ -142,7 +142,7 @@ def list_2_output(decon, curation, rapid, analysis):
 def post_it(json, hook):
     webhook = f'{hook}'
     print(json)
-    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
+    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
 
 
 def main():
