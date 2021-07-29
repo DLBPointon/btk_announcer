@@ -117,22 +117,21 @@ def list_2_output(decon, curation, rapid, analysis):
         for ii in i:
             counter += 1
 
-    master_out = '{"text":"\n' + \
-                 f' -------- MrBTK Report for {date.today()} START--------\n' + \
-                 f' --- Version 2.2 ---\n' + \
-                 f' --- Organised Decon, Curation, Rapid --- \n' + \
-                 f'===================================================\n' + \
-                 f'{req_start}\n' + \
-                 f'{req_list}\n' + \
-                 f'{run_start}\n' + \
-                 f'{run_list}\n' + \
-                 f'{don_start}\n' + \
-                 f'{don_list}\n' + \
-                 f'===================================================\n' + \
-                 f'\tBTK\'ed and in Pipeline: {counter}\n' + \
-                 f'===================================================\n' + \
-                 f' -------- Report for {date.today()} FIN -------- "' + \
-                 '}'
+    master_out = '{"text":"\n' \
+                 f' -------- MrBTK Report for {date.today()} START--------\n' \
+                 f' --- Version 2.2 ---\n' \
+                 f' --- Organised Decon, Curation, Rapid --- \n' \
+                 f'===================================================\n' \
+                 f'{req_start}\n' \
+                 f'{req_list}\n' \
+                 f'{run_start}\n' \
+                 f'{run_list}\n' \
+                 f'{don_start}\n' \
+                 f'{don_list}\n' \
+                 f'===================================================\n\tBTK\'ed and in Pipeline: {counter}\n' \
+                 f'===================================================\n' \
+                 f'-------- Report for {date.today()} FIN -------- "' \
+                 f'}'
 
     return master_out
 
