@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 def dotloader():
-    load_dotenv() #for testing
+    #load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     #print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
