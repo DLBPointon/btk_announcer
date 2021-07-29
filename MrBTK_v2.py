@@ -2,13 +2,13 @@ from jira import JIRA
 from datetime import date
 import sys
 import os
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 
 def dotloader():
-    #load_dotenv() #for testing
+    load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
-    print(jira_user)
+    #print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
     test_hook = os.getenv('SLACK_TEST')
     prod_hook = os.getenv('SLACK_PROD')
@@ -43,6 +43,7 @@ def comment_check(auth_jira, projects):
     request = []
     done = []
     running = []
+    analysis = []
 
     for issue in projects:
         btk_issues = auth_jira.issue(f'{issue}')
@@ -59,32 +60,36 @@ def comment_check(auth_jira, projects):
             if 'BTK RUNNING' in comment.body or 'RUNNING BTK' in comment.body:
                 running.append(str(issue))
 
-    done_1, running_2, request_3 = list_setter(done, running, request)
+            if 'BTK ANALYSIS DONE' in comment.body or 'btk analysis done' in comment.body:
+                analysis.append(str(issue))
 
-    return done_1, running_2, request_3
+    analysis_1, done_1, running_2, request_3 = list_setter(analysis, done, running, request)
+
+    return done_1, running_2, request_3, analysis_1
 
 
-def list_setter(done, running, request):
+def list_setter(analysis, done, running, request):
     # Creates lists of unique issues
-    done = list(set(done))
+    done = list(set(done) - set(analysis))
     running = list(set(running))
     request = list(set(request))
 
     # Removes any issues found in DONE
     request = list(set(request) - set(done))
     running = list(set(running) - set(done))
+    analysis = list(set(analysis))
 
     # Removes any issues found in RUNNING
     request = list(set(request) - set(running))
 
-    return done, running, request
+    return analysis, done, running, request
 
 
-def list_2_output(decon, curation, rapid):
+def list_2_output(decon, curation, rapid, analysis):
 
     req_start = f' --- Status == REQUESTS --- ALL CHANNELS ---'
     run_start = f' --- Status == RUNNING --- ALL CHANNELS ---'
-    don_start = f' --- Status == DONE --- ALL CHANNELS ---'
+    don_start = f' --- Status == NEED ANALYSIS --- ALL CHANNELS ---'
 
     req_list = ''
     for i in decon[2], curation[2], rapid[2]:
@@ -107,9 +112,14 @@ def list_2_output(decon, curation, rapid):
 
         don_list = don_list + f' {i}' + '\n'
 
+    counter = 0
+    for i in analysis[0], analysis[1], analysis[2]:
+        for ii in i:
+            counter += 1
+
     master_out = '{"text":"\n' + \
                  f' -------- MrBTK Report for {date.today()} START--------\n' + \
-                 f' --- Version 2.0 ---\n' + \
+                 f' --- Version 2.2 ---\n' + \
                  f' --- Organised Decon, Curation, Rapid --- \n' + \
                  f'===================================================\n' + \
                  f'{req_start}\n' + \
@@ -118,6 +128,8 @@ def list_2_output(decon, curation, rapid):
                  f'{run_list}\n' + \
                  f'{don_start}\n' + \
                  f'{don_list}\n' + \
+                 f'===================================================\n' + \
+                 f'\tBTK\'ed and in Pipeline: {counter}\n' + \
                  f'===================================================\n' + \
                  f' -------- Report for {date.today()} FIN -------- "' + \
                  '}'
@@ -128,7 +140,7 @@ def list_2_output(decon, curation, rapid):
 def post_it(json, hook):
     webhook = f'{hook}'
     print(json)
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
+    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
 
 
 def main():
@@ -140,6 +152,7 @@ def main():
 
     decon_or_curation = [True, False]
 
+    decon_analysis, curation_analysis, rapid_analysis = None, None, None
     decon_done, decon_running, decon_request = None, None, None
     curation_done, curation_running, curation_request = None, None, None
     rapid_done, rapid_running, rapid_request = None, None, None
@@ -150,23 +163,25 @@ def main():
             for ii in decon_or_curation:
                 projects = labelled_btk(auth_jira, i, ii)
                 if ii:
-                    decon_done, decon_running, decon_request = comment_check(auth_jira, projects)
+                    decon_done, decon_running, decon_request, decon_analysis = comment_check(auth_jira, projects)
                     # Above run list_setter
                 else:
-                    curation_done, curation_running, curation_request = comment_check(auth_jira, projects)
+                    curation_done, curation_running, curation_request, curation_analysis = comment_check(auth_jira,
+                                                                                                         projects)
                     # Above run list_setter
 
         else:
             projects = labelled_btk(auth_jira, i, False)
 
-            rapid_done, rapid_running, rapid_request = comment_check(auth_jira, projects)
+            rapid_done, rapid_running, rapid_request, rapid_analysis = comment_check(auth_jira, projects)
             # Above run list_setter
 
+    analysis = [decon_analysis, curation_analysis, rapid_analysis]
     decon = [decon_done, decon_running, decon_request]
     curation = [curation_done, curation_running, curation_request]
     rapid = [rapid_done, rapid_running, rapid_request]
 
-    master_out = list_2_output(decon, curation, rapid)
+    master_out = list_2_output(decon, curation, rapid, analysis)
     print(master_out)
 
     if sys.argv[0] == 'test':
