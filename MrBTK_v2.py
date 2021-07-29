@@ -184,10 +184,7 @@ def main():
     master_out = list_2_output(decon, curation, rapid, analysis)
     print(master_out)
 
-    if sys.argv[0] == 'test':
-        post_it(master_out, test_hook)
-    else:
-        post_it(master_out, prod_hook)
+    post_it(master_out, prod_hook)
 
 
 if __name__ == '__main__':
