@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 def dotloader():
-    # load_dotenv() #for testing
+    load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     jira_pass = os.getenv('JIRA_PASS')
     test_hook = os.getenv('SLACK_TEST')
@@ -114,11 +114,11 @@ def list_2_output(decon, curation, rapid, analysis):
         don_list = don_list + f' {i}' + '\n'
     
     warnings = ''
-    if len(don_list) >= 10:
+    if don_list.count('R') >= 10:
         warnings = warnings + 'Please Add "BTK ANALYSIS DONE" to finished tickets \n'
     else:
         warnings = warnings
-    if len(req_list) >= 10:
+    if req_list.count('R') >= 10:
         warnings = warnings + 'Please Add "BTK DONE" to tickets \n'
     else:
         warnings = warnings
@@ -151,7 +151,7 @@ def list_2_output(decon, curation, rapid, analysis):
 
 def post_it(json, hook):
     webhook = f'{hook}'
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
+    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
 
 
 def main():
