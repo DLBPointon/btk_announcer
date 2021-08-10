@@ -115,11 +115,16 @@ def list_2_output(decon, curation, rapid, analysis):
     
     warnings = ''
     if don_list.count('R') >= 10:
-        warnings = warnings + 'Please Add "BTK ANALYSIS DONE" to finished tickets \n'
+        warnings = warnings + 'Please Add {BTK ANALYSIS DONE} to finished tickets' + '\n'
     else:
         warnings = warnings
     if req_list.count('R') >= 10:
-        warnings = warnings + 'Please Add "BTK DONE" to tickets \n'
+        warnings = warnings + 'Please Add {BTK DONE} to tickets' + '\n'
+    else:
+        warnings = warnings
+
+    if len(warnings) > 1:
+        warnings = '===================================================\n' + warnings
     else:
         warnings = warnings
 
@@ -139,7 +144,7 @@ def list_2_output(decon, curation, rapid, analysis):
                  f'{run_list}\n' + \
                  f'{don_start}\n' + \
                  f'{don_list}\n' + \
-                 f'{warnings}' + \
+                 f'{warnings}\n' + \
                  f'===================================================\n' + \
                  f'BTKed and in the Pipeline:  {counter}\n' + \
                  f'===================================================\n' + \
@@ -150,8 +155,9 @@ def list_2_output(decon, curation, rapid, analysis):
 
 
 def post_it(json, hook):
+    #json = '{"text":"Why am i not working :face_with_monocle"}'
     webhook = f'{hook}'
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
+    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}).read()")
 
 
 def main():
