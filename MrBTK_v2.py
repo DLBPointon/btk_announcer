@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 def dotloader():
     # load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
-    #print(jira_user)
     jira_pass = os.getenv('JIRA_PASS')
     test_hook = os.getenv('SLACK_TEST')
     prod_hook = os.getenv('SLACK_PROD')
@@ -141,7 +140,6 @@ def list_2_output(decon, curation, rapid, analysis):
 
 def post_it(json, hook):
     webhook = f'{hook}'
-    print(json)
     os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}")
 
 
