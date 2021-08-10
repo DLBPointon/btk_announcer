@@ -115,10 +115,14 @@ def list_2_output(decon, curation, rapid, analysis):
         don_list = don_list + f' {i}' + '\n'
     
     warnings = ''
-    if len(don_list) > 10:
+    if len(don_list) >= 10:
         warnings = warnings + 'Please Add "BTK ANALYSIS DONE" to finished tickets \n'
-    if len(req_list) > 10:
-        warnings = warnings + 'Please Add "BTK RUNNING" to tickets \n'
+    else:
+        warnings = warnings
+    if len(req_list) >= 10:
+        warnings = warnings + 'Please Add "BTK DONE" to tickets \n'
+    else:
+        warnings = warnings
 
     counter = 0
     for i in analysis[0], analysis[1], analysis[2]:
