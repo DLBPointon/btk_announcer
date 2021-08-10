@@ -113,6 +113,12 @@ def list_2_output(decon, curation, rapid, analysis):
             i = 'Queue Empty :+1:'
 
         don_list = don_list + f' {i}' + '\n'
+    
+    warnings = ''
+    if len(done_list) > 10:
+        warnings = warnings + 'Please Add "BTK ANALYSIS DONE" to finished tickets \n'
+    if len(req_list) > 10:
+        warnings = warnings + 'Please Add "BTK RUNNING" to tickets \n'
 
     counter = 0
     for i in analysis[0], analysis[1], analysis[2]:
@@ -130,6 +136,7 @@ def list_2_output(decon, curation, rapid, analysis):
                  f'{run_list}\n' + \
                  f'{don_start}\n' + \
                  f'{don_list}\n' + \
+                 f'{warnings}' + \
                  f'===================================================\n' + \
                  f'BTKed and in the Pipeline:  {counter}\n' + \
                  f'===================================================\n' + \
