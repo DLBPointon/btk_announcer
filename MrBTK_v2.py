@@ -157,7 +157,7 @@ def list_2_output(decon, curation, rapid, analysis):
 def post_it(json, hook):
     #json = '{"text":"Why am i not working :face_with_monocle"}'
     webhook = f'{hook}'
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}).read()")
+    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook})").read()
 
 
 def main():
