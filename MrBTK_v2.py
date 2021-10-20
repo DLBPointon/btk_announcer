@@ -137,7 +137,7 @@ def list_2_output(decon, curation, rapid, analysis):
                  f' -------- MrBTK Report for {date.today()} START--------\n' + \
                  f' --- Version 2.3 ---\n' + \
                  f' --- Organised Decon, Curation, Rapid --- \n' + \
-                 f' *Curation = Everything including and post-curation*' + \
+                 f' *Curation = Everything including and post-curation*\n' + \
                  f'===================================================\n' + \
                  f'{req_start}\n' + \
                  f'{req_list}\n' + \
