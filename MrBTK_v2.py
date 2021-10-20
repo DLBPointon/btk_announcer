@@ -24,7 +24,7 @@ def labelled_btk(auth, project, decon_or_curation):
     projects = None
 
     if project == '= "Assembly curation"' and not decon_or_curation:
-        projects = auth.search_issues(f'project {project} AND labels = BlobToolKit AND status IN (curation,"Curation QC")',
+        projects = auth.search_issues(f'project {project} AND labels = BlobToolKit AND status IN (curation,"Curation QC", Submitted, "In Submission")',
                                       maxResults=10000)
 
     if project == '= "Assembly curation"' and decon_or_curation:
@@ -135,8 +135,9 @@ def list_2_output(decon, curation, rapid, analysis):
 
     master_out = '{"text":"\n' + \
                  f' -------- MrBTK Report for {date.today()} START--------\n' + \
-                 f' --- Version 2.2 ---\n' + \
+                 f' --- Version 2.3 ---\n' + \
                  f' --- Organised Decon, Curation, Rapid --- \n' + \
+                 f' *Curation = Everything including and post-curation*' + \
                  f'===================================================\n' + \
                  f'{req_start}\n' + \
                  f'{req_list}\n' + \
