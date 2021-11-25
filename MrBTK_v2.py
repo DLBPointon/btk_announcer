@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 def dotloader():
-    #load_dotenv() #for testing
+    load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     jira_pass = os.getenv('JIRA_PASS')
     test_hook = os.getenv('SLACK_TEST')
@@ -44,6 +44,7 @@ def comment_check(auth_jira, projects):
     running = []
     analysis = []
     rerun = []
+    rerunning = []
     redone = []
     reanalysis = []
 
@@ -71,18 +72,22 @@ def comment_check(auth_jira, projects):
             if 'BTK REDONE' in comment.body or 'btk redone' in comment.body:
                 redone.append(str(issue))
 
+            if 'BTK RERUNNING' in comment.body or 'btk rerunning' in comment.body:
+                rerunning.append(str(issue))
+
             if 'BTK ANALYSIS REDONE' in comment.body or 'btk analysis redone' in comment.body:
                 reanalysis.append(str(issue))
 
 
 
-    analysis_1, done_1, running_2, request_3, rerun_2, done_again, reanalysis_2 = list_setter(analysis, done, running,
-                                                                               request, rerun, redone, reanalysis)
+    analysis_1, done_1, running_2,\
+    request_3, rerun_2, done_again,\
+    reanalysis_2, rerunning = list_setter(analysis, done, running, request, rerun, redone, reanalysis, rerunning)
 
-    return done_1, running_2, request_3, analysis_1, rerun_2, done_again, reanalysis_2
+    return done_1, running_2, request_3, analysis_1, rerun_2, done_again, reanalysis_2, rerunning
 
 
-def list_setter(analysis, done, running, request, rerun, redone, reanalysis):
+def list_setter(analysis, done, running, request, rerun, redone, reanalysis, rerunning):
     # Creates lists of unique issues
     done2 = list(set(done))
     done = list(set(done)-set(analysis))
@@ -92,25 +97,19 @@ def list_setter(analysis, done, running, request, rerun, redone, reanalysis):
     rerun = list(set(rerun))
     redone = list(set(redone))
     rerun_2 = list(set(rerun) - set(redone))
+    rerunning = list(set(rerunning))
+    rerunning2 = list(set(rerunning) - set(redone))
     reanalysis_2 = list(set(redone) - set(reanalysis))
-
-
-    print(f'{rerun} \n')
-    print(f"{redone}\n")
-    print(f"{rerun_2}\n")
-    print(f"{reanalysis_2}")
-
 
     # Removes any issues found in DONE
     request = list(set(request) - set(done2))
     running = list(set(running) - set(done2))
     analysis = list(set(analysis))
 
-
     # Removes any issues found in RUNNING
     request = list(set(request) - set(running))
 
-    return analysis, done, running, request, rerun_2, redone, reanalysis_2
+    return analysis, done, running, request, rerun_2, redone, reanalysis_2, rerunning2
 
 
 def list_2_output(decon, curation, rapid, analysis, rerun):
@@ -176,6 +175,7 @@ def list_2_output(decon, curation, rapid, analysis, rerun):
                  f'{warnings}\n' + \
                  f'===================================================\n' + \
                  f'Re-Run Request: {rerun[0]},{rerun[2]},{rerun[4]}\n' + \
+                 f'Re-Run Running: {rerun[9]},{rerun[10]},{rerun[11]}\n' + \
                  f'Re-Runs for Analysis: {rerun[6]},{rerun[7]},{rerun[8]}\n' + \
                  f'===================================================\n' + \
                  f'BTKed and in the Pipeline:  {counter}\n' + \
@@ -189,7 +189,7 @@ def list_2_output(decon, curation, rapid, analysis, rerun):
 def post_it(json, hook):
     #json = '{"text":"Why am i not working :face_with_monocle"}'
     webhook = f'{hook}'
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
+    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
     print(json)
 
 
@@ -203,9 +203,9 @@ def main():
     decon_or_curation = [True, False]
 
     decon_analysis, curation_analysis, rapid_analysis = None, None, None
-    decon_done, decon_running, decon_request, decon_re, decon_redone, decon_analysis2 = None, None, None, None, None, None
-    curation_done, curation_running, curation_request, curation_re, curation_redone, curation_analysis2 = None, None, None, None, None, None
-    rapid_done, rapid_running, rapid_request, rapid_re, rapid_redone, rapid_analysis2 = None, None, None, None, None, None
+    decon_done, decon_running, decon_request, decon_re, decon_redone, decon_analysis2, decon_rerunning = None, None, None, None, None, None, None
+    curation_done, curation_running, curation_request, curation_re, curation_redone, curation_analysis2, curation_rerunning = None, None, None, None, None, None, None
+    rapid_done, rapid_running, rapid_request, rapid_re, rapid_redone, rapid_analysis2, rapid_rerunning = None, None, None, None, None, None, None
 
     for i in project:
 
@@ -215,12 +215,12 @@ def main():
                 if ii:
                     decon_done, decon_running, decon_request,\
                     decon_analysis, decon_re, decon_redone,\
-                    decon_analysis2 = comment_check(auth_jira, projects)
+                    decon_analysis2, decon_rerunning = comment_check(auth_jira, projects)
                     # Above run list_setter
                 else:
                     curation_done, curation_running, curation_request,\
                     curation_analysis, curation_re, curation_redone,\
-                    curation_analysis2 = comment_check(auth_jira,projects)
+                    curation_analysis2, curation_rerunning = comment_check(auth_jira,projects)
                     # Above run list_setter
 
         else:
@@ -228,7 +228,7 @@ def main():
 
             rapid_done, rapid_running, rapid_request,\
             rapid_analysis, rapid_re, rapid_redone,\
-            rapid_analysis2 = comment_check(auth_jira, projects)
+            rapid_analysis2, rapid_rerunning = comment_check(auth_jira, projects)
             # Above run list_setter
 
     analysis = [decon_analysis, curation_analysis, rapid_analysis, ]
@@ -236,7 +236,7 @@ def main():
     curation = [curation_done, curation_running, curation_request, ]
     rapid = [rapid_done, rapid_running, rapid_request, ]
     rerun = [decon_re, decon_redone, curation_re, curation_redone, rapid_re, rapid_redone,
-             decon_analysis2, curation_analysis2, rapid_analysis2]
+             decon_analysis2, curation_analysis2, rapid_analysis2, decon_rerunning, curation_rerunning, rapid_rerunning]
 
     master_out = list_2_output(decon, curation, rapid, analysis, rerun)
     print(master_out)
