@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 def dotloader():
-    load_dotenv() #for testing
+    #load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     jira_pass = os.getenv('JIRA_PASS')
     test_hook = os.getenv('SLACK_TEST')
@@ -189,7 +189,7 @@ def list_2_output(decon, curation, rapid, analysis, rerun):
 def post_it(json, hook):
     #json = '{"text":"Why am i not working :face_with_monocle"}'
     webhook = f'{hook}'
-    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
+    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
     print(json)
 
 
