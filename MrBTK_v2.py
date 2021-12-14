@@ -66,7 +66,7 @@ def comment_check(auth_jira, projects):
             if 'BTK ANALYSIS DONE' in comment.body or 'btk analysis done' in comment.body:
                 analysis.append(str(issue))
 
-            if "need a new btk" in comment.body or "NEEDS A NEW BTK" in comment.body:
+            if "needs a new btk" in comment.body or "NEEDS A NEW BTK" in comment.body:
                 rerun.append(str(issue))
 
             if 'BTK REDONE' in comment.body or 'btk redone' in comment.body:
