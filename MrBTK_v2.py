@@ -90,9 +90,9 @@ def comment_check(auth_jira, projects):
 def list_setter(analysis, done, running, request, rerun, redone, reanalysis, rerunning):
     # Creates lists of unique issues
     done2 = list(set(done))
-    done = list(set(done)-set(analysis))
-    running = list(set(running))
-    request = list(set(request))
+    done = list(set(done)-set(analysis)-set(redone))
+    running = list(set(running)-set(rerunning))
+    request = list(set(request)-set(rerun))
 
     rerun = list(set(rerun))
     redone = list(set(redone))
@@ -162,7 +162,7 @@ def list_2_output(decon, curation, rapid, analysis, rerun):
 
     master_out = '{"text":"\n' + \
                  f' -------- MrBTK Report for {date.today()} START--------\n' + \
-                 f' --- Version 2.4 ---\n' + \
+                 f' --- Version 2.5 ---\n' + \
                  f' --- Organised Decon, Curation, Rapid --- \n' + \
                  f' *Curation = Everything including and post-curation*\n' + \
                  f'===================================================\n' + \
