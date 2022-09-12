@@ -21,10 +21,13 @@ before_script:
     - pip3 install jira
     - pip3 install datetime
     - pip3 install python-dotenv
+    - pip3 install tabulate
+    - pip3 install requests
+    - pip3 install pandas
 
 mrbtk:
   stage: first
   tags:
    - autoscale
   script:
-    - python3 MrBTK_v2.py
+    - python3 MrBTK.py
