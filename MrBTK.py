@@ -1,14 +1,11 @@
-from MrBTK_v2 import comment_check
 from jira import JIRA
 from datetime import date
-import sys
 import os
 from dotenv import load_dotenv
 from tabulate import tabulate
 import pandas as pd
 import requests
 import time
-import json
 
 startTime = time.time()
 
