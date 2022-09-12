@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 def dotloader():
-    #load_dotenv() #for testing
+    load_dotenv() #for testing
     jira_user = os.getenv('JIRA_USER')
     jira_pass = os.getenv('JIRA_PASS')
     test_hook = os.getenv('SLACK_TEST')
@@ -25,15 +25,15 @@ def labelled_btk(auth, project, decon_or_curation):
 
     if project == '= "Assembly curation"' and not decon_or_curation:
         projects = auth.search_issues(f'project {project} AND labels = BlobToolKit AND status IN (curation,"Curation QC", Submitted, "In Submission")',
-                                      maxResults=10000)
+                                        maxResults=10000)
 
     if project == '= "Assembly curation"' and decon_or_curation:
         projects = auth.search_issues(f'project {project} AND status = Decontamination AND labels = BlobToolKit',
-                                      maxResults=10000)
+                                        maxResults=10000)
 
     if project == '= "Rapid Curation"':
         projects = auth.search_issues(f'project {project} AND labels = BlobToolKit',
-                                      maxResults=10000)
+                                        maxResults=10000)
 
     return projects
 
@@ -161,35 +161,35 @@ def list_2_output(decon, curation, rapid, analysis, rerun):
             counter += 1
 
     master_out = '{"text":"\n' + \
-                 f' -------- MrBTK Report for {date.today()} START--------\n' + \
-                 f' --- Version 2.5 ---\n' + \
-                 f' --- Organised Decon, Curation, Rapid --- \n' + \
-                 f' *Curation = Everything including and post-curation*\n' + \
-                 f'===================================================\n' + \
-                 f'{req_start}\n' + \
-                 f'{req_list}\n' + \
-                 f'{run_start}\n' + \
-                 f'{run_list}\n' + \
-                 f'{don_start}\n' + \
-                 f'{don_list}\n' + \
-                 f'{warnings}\n' + \
-                 f'===================================================\n' + \
-                 f'Re-Run Request: {rerun[0]},{rerun[2]},{rerun[4]}\n' + \
-                 f'Re-Run Running: {rerun[9]},{rerun[10]},{rerun[11]}\n' + \
-                 f'Re-Runs for Analysis: {rerun[6]},{rerun[7]},{rerun[8]}\n' + \
-                 f'===================================================\n' + \
-                 f'BTKed and in the Pipeline:  {counter}\n' + \
-                 f'===================================================\n' + \
-                 f' -------- Report for {date.today()} FIN -------- "' + \
-                 '}'
+                f' -------- MrBTK Report for {date.today()} START--------\n' + \
+                f' --- Version 2.5 ---\n' + \
+                f' --- Organised Decon, Curation, Rapid --- \n' + \
+                f' *Curation = Everything including and post-curation*\n' + \
+                f'===================================================\n' + \
+                f'{req_start}\n' + \
+                f'{req_list}\n' + \
+                f'{run_start}\n' + \
+                f'{run_list}\n' + \
+                f'{don_start}\n' + \
+                f'{don_list}\n' + \
+                f'{warnings}\n' + \
+                f'===================================================\n' + \
+                f'Re-Run Request: {rerun[0]},{rerun[2]},{rerun[4]}\n' + \
+                f'Re-Run Running: {rerun[9]},{rerun[10]},{rerun[11]}\n' + \
+                f'Re-Runs for Analysis: {rerun[6]},{rerun[7]},{rerun[8]}\n' + \
+                f'===================================================\n' + \
+                f'BTKed and in the Pipeline:  {counter}\n' + \
+                f'===================================================\n' + \
+                f' -------- Report for {date.today()} FIN -------- "' + \
+                '}'
 
     return master_out
 
 
 def post_it(json, hook):
-    #json = '{"text":"Why am i not working :face_with_monocle"}'
+    json = '{"text":"Why am i not working :face_with_monocle"}'
     webhook = f'{hook}'
-    os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
+    #os.popen(f"curl -X POST -H 'Content-type: application/json' --data '{json}' {webhook}").read()
     print(json)
 
 
@@ -236,7 +236,8 @@ def main():
     curation = [curation_done, curation_running, curation_request, ]
     rapid = [rapid_done, rapid_running, rapid_request, ]
     rerun = [decon_re, decon_redone, curation_re, curation_redone, rapid_re, rapid_redone,
-             decon_analysis2, curation_analysis2, rapid_analysis2, decon_rerunning, curation_rerunning, rapid_rerunning]
+                decon_analysis2, curation_analysis2, rapid_analysis2, decon_rerunning,
+                curation_rerunning, rapid_rerunning]
 
     master_out = list_2_output(decon, curation, rapid, analysis, rerun)
     print(master_out)
