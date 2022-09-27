@@ -1,11 +1,12 @@
 from jira import JIRA
 from datetime import date
-import os
 from dotenv import load_dotenv
 from tabulate import tabulate
 import pandas as pd
 import requests
 import time
+import sys
+import os
 
 startTime = time.time()
 
@@ -19,16 +20,22 @@ END_LIST = ['BTK ANALYSIS DONE', 'btk analysis done',
             'BTK ANALYSIS REDONE', 'btk analysis redone']
 
 def dotloader():
-    load_dotenv() #for testing
-    jira_user = os.getenv('JIRA_USER')
-    jira_pass = os.getenv('JIRA_PASS')
+    #load_dotenv() # For local testing
     test_hook = os.getenv('SLACK_TEST')
     prod_hook = os.getenv('SLACK_PROD')
-    return jira_user, jira_pass, test_hook, prod_hook
+
+    if sys.argv[1] == 'test':
+        hook = test_hook
+    elif sys.argv[1] == 'prod':
+        hook = prod_hook
+    else:
+        print(f" NOT A VALID FLAG: {sys.argv[1]}\n ONLY 'test' or 'prod' ")
+
+    return os.getenv('JIRA_USER'), os.getenv('JIRA_PASS'), hook, os.getenv('JIRA_INST')
 
 
-def authorise(user, password):
-    return JIRA("https://grit-jira.sanger.ac.uk", basic_auth=(user, password))
+def authorise(url, user, password):
+    return JIRA(url, basic_auth=(user, password))
 
 def dict_add(ticket_dict, ticket_list, project, decon_or_curation):
     for i in ticket_list:
@@ -92,9 +99,10 @@ def convert_to_df(ticket_dict):
     return pd.DataFrame.from_dict(ticket_dict) 
 
 
-def main():    
-    user, password, test_hook, prod_hook = dotloader()
-    auth_jira = authorise(user, password)
+def main():
+
+    user, password, hook, jira_inst = dotloader()
+    auth_jira = authorise(jira_inst, user, password)
 
     project = ["Assembly curation", "Rapid Curation"]
     decon_or_curation = [True, False]
@@ -116,8 +124,8 @@ def main():
             }
 
     data = '{"text":' + "'Report for: " + str(date.today().strftime('%d-%b-%Y')) + " \n ```" + str(prettier_df) + "``` \n I took: " + str(round(executionTime)) + " seconds'" + '}'
-
-    res = requests.post( prod_hook, headers=headers, data=data)
+    
+    res = requests.post(hook, headers=headers, data=data)
     print(res)
 
 if __name__ == '__main__':
