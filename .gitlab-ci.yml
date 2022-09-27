@@ -13,6 +13,8 @@ variables:
     JIRA_USER: $JIRA_USER
     TEST_HOOK: $SLACK_TEST
     PROD_HOOK: $SLACK_HOOK
+    JIRA_INST: $JIRA_INST
+    FLAG: $flag
 
 before_script:
     - echo $PATH
@@ -30,4 +32,4 @@ mrbtk:
   tags:
    - autoscale
   script:
-    - python3 MrBTK.py
+    - python3 MrBTK.py $flag
