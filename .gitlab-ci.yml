@@ -33,3 +33,4 @@ mrbtk:
    - autoscale
   script:
     - python3 MrBTK.py $flag
+  retry: 2
