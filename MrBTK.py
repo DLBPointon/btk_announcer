@@ -47,17 +47,17 @@ def labelled_btk(auth, project, decon_or_curation):
 
     for i in project:
         for ii in decon_or_curation:
-            if i == "Assembly curation" and not ii:
+            if i == "ToL Assembly curation" and not ii:
                 ticket_list = auth.search_issues(f'project ="{i}" AND labels = BlobToolKit AND status IN (curation,"Curation QC", Submitted, "In Submission")',
                                                 maxResults=10000)
                 tickets = dict_add(tickets, ticket_list, i, ii)
 
-            if i == "Assembly curation" and ii:
+            if i == "ToL Assembly curation" and ii:
                 ticket_list = auth.search_issues(f'project ="{i}" AND status = Decontamination AND labels = BlobToolKit',
                                                 maxResults=10000)
                 tickets = dict_add(tickets, ticket_list, i, ii)
 
-            if i == "Rapid Curation":
+            if i == "ToL Rapid Curation":
                 ticket_list = auth.search_issues(f'project ="{i}" AND labels = BlobToolKit',
                                                 maxResults=10000)
             tickets = dict_add(tickets, ticket_list, i, ii)
@@ -104,7 +104,7 @@ def main():
     user, password, hook, jira_inst = dotloader()
     auth_jira = authorise(jira_inst, user, password)
 
-    project = ["Assembly curation", "Rapid Curation"]
+    project = ["ToL Assembly curation", "ToL Rapid Curation"]
     decon_or_curation = [True, False]
 
     tickets = labelled_btk(auth_jira, project, decon_or_curation)
